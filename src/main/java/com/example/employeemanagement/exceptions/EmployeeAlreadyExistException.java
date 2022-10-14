@@ -1,6 +1,9 @@
 package com.example.employeemanagement.exceptions;
 
-public class EmployeeAlreadyExistException extends Throwable {
-    public EmployeeAlreadyExistException(String s) {
+import org.springframework.http.HttpStatus;
+
+public class EmployeeAlreadyExistException extends EmployeeManagementException {
+    public EmployeeAlreadyExistException(String message, HttpStatus status) {
+        super(message, status);
     }
 }

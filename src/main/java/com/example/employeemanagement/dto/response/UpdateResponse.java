@@ -1,2 +1,4 @@
-package com.example.employeemanagement.dto.response;public class UpdateResponse {
+package com.example.employeemanagement.dto.response;
+
+public class UpdateResponse {
 }

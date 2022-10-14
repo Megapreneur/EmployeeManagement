@@ -1,2 +1,4 @@
-package com.example.employeemanagement.services;public interface AttendanceService {
+package com.example.employeemanagement.services;
+
+public interface AttendanceService {
 }
