@@ -8,13 +8,15 @@ import com.example.employeemanagement.data.repositories.EmployeeRepository;
 import com.example.employeemanagement.dto.request.AddRequest;
 import com.example.employeemanagement.dto.request.UpdateRequest;
 import com.example.employeemanagement.dto.response.AddResponse;
+import com.example.employeemanagement.dto.response.EmployeeDto;
 import com.example.employeemanagement.dto.response.UpdateResponse;
 import com.example.employeemanagement.exceptions.EmployeeAlreadyExistException;
 import com.example.employeemanagement.exceptions.PasswordMisMatchException;
 import com.example.employeemanagement.exceptions.UauthorizedUserException;
 import com.example.employeemanagement.exceptions.UserDoesNotExistException;
-import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,12 +25,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService{
-    private final AdminRepository adminRepository;
-    private final EmployeeRepository employeeRepository;
-    private  final ModelMapper mapper;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private  ModelMapper mapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public AddResponse addEmployee(AddRequest request) throws UserDoesNotExistException, UauthorizedUserException, EmployeeAlreadyExistException, PasswordMisMatchException {
         Optional<Admin>admin = adminRepository.findByEmail(request.getAdminEmail());
@@ -65,8 +70,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAllEmployees() {
+        return employeeRepository.findAllEmployee();
     }
 
 }
