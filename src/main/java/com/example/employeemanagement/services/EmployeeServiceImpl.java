@@ -2,6 +2,7 @@ package com.example.employeemanagement.services;
 
 import com.example.employeemanagement.data.models.Admin;
 import com.example.employeemanagement.data.models.Employee;
+import com.example.employeemanagement.data.models.enums.Department;
 import com.example.employeemanagement.data.models.enums.Role;
 import com.example.employeemanagement.data.repositories.AdminRepository;
 import com.example.employeemanagement.data.repositories.EmployeeRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -42,6 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                 if (admin.get().getRole().equals(Role.ADMIN)){
                     if (!employeeRepository.existsByEmail(request.getEmail())){
                         Employee employee = mapper.map(request, Employee.class);
+                        employee.setEmployeeId(generateEmployeeId(employee));
                         Employee savedEmployee = employeeRepository.save(employee);
                         return AddResponse
                                 .builder()
@@ -56,6 +59,19 @@ public class EmployeeServiceImpl implements EmployeeService{
             throw new PasswordMisMatchException("Invalid login details.", HttpStatus.NOT_ACCEPTABLE);
         }
         throw new UserDoesNotExistException("Invalid admin account.", HttpStatus.NOT_ACCEPTABLE);
+    }
+    private String generateEmployeeId(Employee employee){
+        String id = String.valueOf(UUID.randomUUID().getMostSignificantBits());
+        switch (employee.getDepartment()){
+            case IT -> id = id.substring(1, 4) + "ITD";
+            case CUSTOMER_SERVICE -> id = id.substring(1, 4) + "CSD";
+            case FINANCE -> id = id.substring(1, 4) + "FND";
+            case LOGISTIC -> id = id.substring(1, 4) + "LOG";
+            case SECURITY -> id = id.substring(1, 4) + "SEC";
+            case OPERATIONS -> id = id.substring(1, 4) + "OPT";
+            case PROCUREMENT -> id = id.substring(1, 4) + "PRD";
+        }
+        return id;
     }
 
     @Override
@@ -74,5 +90,9 @@ public class EmployeeServiceImpl implements EmployeeService{
         return employeeRepository.findAllEmployee();
     }
 
+    @Override
+    public Employee findEmployee(String employeeId) {
+        return employeeRepository.findEmployeeById(employeeId);
+    }
 }
 

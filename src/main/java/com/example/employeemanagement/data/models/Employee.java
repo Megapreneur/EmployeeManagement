@@ -4,9 +4,11 @@ import com.example.employeemanagement.data.models.enums.Department;
 import com.example.employeemanagement.data.models.enums.Gender;
 import com.example.employeemanagement.data.models.enums.Role;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +34,8 @@ public class Employee {
     private Role role;
     @Enumerated(EnumType.STRING)
     private Department department;
+    private String employeeId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate resumptionDate;
 
 }

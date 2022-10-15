@@ -18,4 +18,5 @@ public interface EmployeeService {
     AddResponse addEmployee (AddRequest request) throws UserDoesNotExistException, UauthorizedUserException, EmployeeAlreadyExistException, PasswordMisMatchException;
     UpdateResponse updateEmployee(UpdateRequest request) throws UserDoesNotExistException;
     List<EmployeeDto> getAllEmployees();
+    Employee findEmployee(String employeeId);
 }
