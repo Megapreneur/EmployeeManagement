@@ -2,7 +2,6 @@ package com.example.employeemanagement.services;
 
 import com.example.employeemanagement.data.models.Admin;
 import com.example.employeemanagement.data.models.Employee;
-import com.example.employeemanagement.data.models.enums.Department;
 import com.example.employeemanagement.data.models.enums.Role;
 import com.example.employeemanagement.data.repositories.AdminRepository;
 import com.example.employeemanagement.data.repositories.EmployeeRepository;
@@ -11,13 +10,9 @@ import com.example.employeemanagement.dto.request.UpdateRequest;
 import com.example.employeemanagement.dto.response.AddResponse;
 import com.example.employeemanagement.dto.response.EmployeeDto;
 import com.example.employeemanagement.dto.response.UpdateResponse;
-import com.example.employeemanagement.exceptions.EmployeeAlreadyExistException;
-import com.example.employeemanagement.exceptions.PasswordMisMatchException;
-import com.example.employeemanagement.exceptions.UauthorizedUserException;
-import com.example.employeemanagement.exceptions.UserDoesNotExistException;
+import com.example.employeemanagement.exceptions.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -91,8 +86,12 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee findEmployee(String employeeId) {
-        return employeeRepository.findEmployeeById(employeeId);
+    public Optional<Employee> findEmployee(String employeeId) throws EmployeeManagementException {
+        Optional<Employee> employee = employeeRepository.findEmployeeById(employeeId);
+        if (employee.isPresent()){
+            return employee;
+        }
+        throw new EmployeeManagementException("No employee with that Id", HttpStatus.NOT_FOUND);
     }
 }
 
