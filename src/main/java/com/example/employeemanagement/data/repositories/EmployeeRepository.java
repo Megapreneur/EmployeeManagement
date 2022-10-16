@@ -16,8 +16,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByEmail(String email);
     @Query("SELECT new com.example.employeemanagement.dto.response.EmployeeDto (employee.employeeId, employee.firstName, employee.lastName,employee.gender, employee.address, employee.department )from Employee employee")
     List<EmployeeDto> findAllEmployee();
-
-
     Optional<Employee> findEmployeeById(String employeeId);
 
 }

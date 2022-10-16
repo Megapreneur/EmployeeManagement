@@ -34,6 +34,7 @@ public class Employee {
     private Role role;
     @Enumerated(EnumType.STRING)
     private Department department;
+    @Column(unique = true)
     private String employeeId;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate resumptionDate;

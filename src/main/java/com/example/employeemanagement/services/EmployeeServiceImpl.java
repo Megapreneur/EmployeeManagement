@@ -6,6 +6,7 @@ import com.example.employeemanagement.data.models.enums.Role;
 import com.example.employeemanagement.data.repositories.AdminRepository;
 import com.example.employeemanagement.data.repositories.EmployeeRepository;
 import com.example.employeemanagement.dto.request.AddRequest;
+import com.example.employeemanagement.dto.request.FindRequest;
 import com.example.employeemanagement.dto.request.UpdateRequest;
 import com.example.employeemanagement.dto.response.AddResponse;
 import com.example.employeemanagement.dto.response.EmployeeDto;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,6 +42,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                     if (!employeeRepository.existsByEmail(request.getEmail())){
                         Employee employee = mapper.map(request, Employee.class);
                         employee.setEmployeeId(generateEmployeeId(employee));
+                        employee.setResumptionDate(LocalDate.now());
                         Employee savedEmployee = employeeRepository.save(employee);
                         return AddResponse
                                 .builder()
@@ -86,10 +89,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Optional<Employee> findEmployee(String employeeId) throws EmployeeManagementException {
+    public Employee findEmployee(String employeeId) throws EmployeeManagementException {
         Optional<Employee> employee = employeeRepository.findEmployeeById(employeeId);
         if (employee.isPresent()){
-            return employee;
+            return employee.get();
         }
         throw new EmployeeManagementException("No employee with that Id", HttpStatus.NOT_FOUND);
     }
