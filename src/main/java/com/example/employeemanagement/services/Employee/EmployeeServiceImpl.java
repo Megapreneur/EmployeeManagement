@@ -1,12 +1,12 @@
-package com.example.employeemanagement.services;
+package com.example.employeemanagement.services.Employee;
 
 import com.example.employeemanagement.data.models.Admin;
 import com.example.employeemanagement.data.models.Employee;
+import com.example.employeemanagement.data.models.enums.Department;
 import com.example.employeemanagement.data.models.enums.Role;
 import com.example.employeemanagement.data.repositories.AdminRepository;
 import com.example.employeemanagement.data.repositories.EmployeeRepository;
 import com.example.employeemanagement.dto.request.AddRequest;
-import com.example.employeemanagement.dto.request.FindRequest;
 import com.example.employeemanagement.dto.request.UpdateRequest;
 import com.example.employeemanagement.dto.response.AddResponse;
 import com.example.employeemanagement.dto.response.EmployeeDto;
@@ -23,8 +23,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.example.employeemanagement.utils.ValidateEmail.isValidEmail;
+
 @Service
-public class EmployeeServiceImpl implements EmployeeService{
+public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private AdminRepository adminRepository;
     @Autowired
@@ -34,29 +36,32 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Override
-    public AddResponse addEmployee(AddRequest request) throws UserDoesNotExistException, UauthorizedUserException, EmployeeAlreadyExistException, PasswordMisMatchException {
-        Optional<Admin>admin = adminRepository.findByEmail(request.getAdminEmail());
-        if (admin.isPresent()) {
-            if (passwordEncoder.matches(request.getPassword(), admin.get().getPassword())){
-                if (admin.get().getRole().equals(Role.ADMIN)){
-                    if (!employeeRepository.existsByEmail(request.getEmail())){
-                        Employee employee = mapper.map(request, Employee.class);
-                        employee.setEmployeeId(generateEmployeeId(employee));
-                        employee.setResumptionDate(LocalDate.now());
-                        Employee savedEmployee = employeeRepository.save(employee);
-                        return AddResponse
-                                .builder()
-                                .message("You have success added " + savedEmployee.getFirstName() + " " +
-                                        savedEmployee.getLastName() + " to the company's database system.")
-                                .build();
+    public AddResponse addEmployee(AddRequest request) throws UserDoesNotExistException, UauthorizedUserException, EmployeeAlreadyExistException, PasswordMisMatchException, InvalidEmailException {
+        if (isValidEmail(request.getEmail())){
+            Optional<Admin>admin = adminRepository.findByEmail(request.getAdminEmail());
+            if (admin.isPresent()) {
+                if (passwordEncoder.matches(request.getPassword(), admin.get().getPassword())){
+                    if (admin.get().getRole().equals(Role.ADMIN)){
+                        if (!employeeRepository.existsByEmail(request.getEmail())){
+                            Employee employee = mapper.map(request, Employee.class);
+                            employee.setEmployeeId(generateEmployeeId(employee));
+                            employee.setResumptionDate(LocalDate.now());
+                            Employee savedEmployee = employeeRepository.save(employee);
+                            return AddResponse
+                                    .builder()
+                                    .message("You have success added " + savedEmployee.getFirstName() + " " +
+                                            savedEmployee.getLastName() + " to the company's database system.")
+                                    .build();
+                        }
+                        throw new EmployeeAlreadyExistException("An employee with " + request.getEmail() + " already exist.", HttpStatus.FORBIDDEN );
                     }
-                    throw new EmployeeAlreadyExistException("An employee with " + request.getEmail() + " already exist.", HttpStatus.FORBIDDEN );
-                } 
-                throw  new UauthorizedUserException("You are not authorized to add employee", HttpStatus.NOT_ACCEPTABLE);
+                    throw  new UauthorizedUserException("You are not authorized to add employee", HttpStatus.NOT_ACCEPTABLE);
+                }
+                throw new PasswordMisMatchException("Invalid login details.", HttpStatus.NOT_ACCEPTABLE);
             }
-            throw new PasswordMisMatchException("Invalid login details.", HttpStatus.NOT_ACCEPTABLE);
+            throw new UserDoesNotExistException("Invalid admin account.", HttpStatus.NOT_ACCEPTABLE);
         }
-        throw new UserDoesNotExistException("Invalid admin account.", HttpStatus.NOT_ACCEPTABLE);
+        throw new InvalidEmailException("Invalid email syntax!!!", HttpStatus.FORBIDDEN);
     }
     private String generateEmployeeId(Employee employee){
         String id = String.valueOf(UUID.randomUUID().getMostSignificantBits());
@@ -89,12 +94,20 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee findEmployee(String employeeId) throws EmployeeManagementException {
-        Optional<Employee> employee = employeeRepository.findEmployeeById(employeeId);
+    public Employee findEmployee(String id) throws EmployeeManagementException {
+        Optional<Employee> employee = employeeRepository.findEmployeeByEmployeeId(id);
         if (employee.isPresent()){
             return employee.get();
         }
         throw new EmployeeManagementException("No employee with that Id", HttpStatus.NOT_FOUND);
     }
+
+    @Override
+    public List<EmployeeDto> getAllEmployeeByDepartment(Department department) {
+        return null;
+    }
 }
+
+
+
 

@@ -1,6 +1,6 @@
 package com.example.employeemanagement.Configuration;
 
-import com.example.employeemanagement.services.AdminServiceImpl;
+import com.example.employeemanagement.services.Admin.AdminServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

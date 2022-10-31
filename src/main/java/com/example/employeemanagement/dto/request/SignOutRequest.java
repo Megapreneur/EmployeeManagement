@@ -14,6 +14,5 @@ import java.time.LocalDateTime;
 @Setter
 public class SignOutRequest {
     private String EmployeeId;
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime time = LocalDateTime.now();
+
 }

@@ -9,7 +9,7 @@ import com.example.employeemanagement.dto.response.RegisterResponse;
 import com.example.employeemanagement.exceptions.PasswordMisMatchException;
 import com.example.employeemanagement.exceptions.UserAlreadyExistException;
 import com.example.employeemanagement.exceptions.UserDoesNotExistException;
-import com.example.employeemanagement.services.AdminService;
+import com.example.employeemanagement.services.Admin.AdminService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

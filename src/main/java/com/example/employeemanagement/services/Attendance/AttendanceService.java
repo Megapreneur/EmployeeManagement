@@ -1,4 +1,4 @@
-package com.example.employeemanagement.services;
+package com.example.employeemanagement.services.Attendance;
 
 import com.example.employeemanagement.dto.request.SignInRequest;
 import com.example.employeemanagement.dto.request.SignOutRequest;

@@ -5,7 +5,7 @@ import com.example.employeemanagement.dto.request.SignOutRequest;
 import com.example.employeemanagement.dto.response.SignInResponse;
 import com.example.employeemanagement.dto.response.SignOutResponse;
 import com.example.employeemanagement.exceptions.EmployeeManagementException;
-import com.example.employeemanagement.services.AttendanceService;
+import com.example.employeemanagement.services.Attendance.AttendanceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
